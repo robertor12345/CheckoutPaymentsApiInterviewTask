@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.30" />
+    <PackageReference Include="Dapper.Contrib" Version="2.0.30" />
+    <PackageReference Include="DapperExtensions" Version="1.6.3" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Checkout.Gateway.Api.Contracts\Checkout.Gateway.Api.Contracts.csproj" />
+    <ProjectReference Include="..\Checkout.Gateway.PaymentsApi.Infrastructure\Checkout.Gateway.PaymentsApi.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

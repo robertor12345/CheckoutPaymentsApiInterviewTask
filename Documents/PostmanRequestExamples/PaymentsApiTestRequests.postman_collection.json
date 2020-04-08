@@ -1,0 +1,124 @@
+{
+	"info": {
+		"_postman_id": "69e2fd76-ec35-4aad-9f31-e26f62313b83",
+		"name": "PaymentsApiTestRequests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "PostPaymentRequest_Valid",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"merchantSessionId\": \"{{$guid}}\",\r\n  \"transactionStartTime\": \"2010-04-07T12:10:17.079137+00:00\",\r\n  \"paymentMethodDetails\": {\r\n    \"cardNumber\": \"5555555555554444\",\r\n    \"expiryMonth\": 4,\r\n    \"expiryYear\": 24,\r\n    \"cvv\": 999\r\n  },\r\n  \"paymentAmount\": 102.0,\r\n  \"currency\": \"GBP\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/gateway/payments/v1/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"gateway",
+						"payments",
+						"v1",
+						""
+					]
+				},
+				"description": "Request type of Post containing a json body object that defines the transaction that is requested."
+			},
+			"response": []
+		},
+		{
+			"name": "PostPaymentRequest_Invalid",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"merchantSessionId\": \"{{$guid}}\",\r\n  \"transactionStartTime\": \"2010-04-07T12:10:17.079137+00:00\",\r\n  \"paymentMethodDetails\": {\r\n    \"cardNumber\": \"5555555555554444\",\r\n    \"expiryMonth\": 3,\r\n    \"expiryYear\": 20,\r\n    \"cvv\": 999\r\n  },\r\n  \"paymentAmount\": 102.0,\r\n  \"currency\": \"GBP\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/gateway/payments/v1/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"gateway",
+						"payments",
+						"v1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPaymentForSessionRequest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:5000/gateway/payments/v1/<GuidHere>",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"gateway",
+						"payments",
+						"v1",
+						"<GuidHere>"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8ca98f9d-fc48-45d9-b486-67a6bb1ba7d1",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "251e0e75-1f8f-4c73-9f42-62135818a692",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

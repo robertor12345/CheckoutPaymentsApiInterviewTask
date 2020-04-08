@@ -1,0 +1,212 @@
+openapi: 3.0.0
+info:
+  title: Payment Gateway API
+  description: The API that allows merchants to send new payment processing requests as well as get processed payment history.
+  version: "1.0.0"
+  contact:
+    name: Roberto Branco-Rhodes
+    email: roberto_rhodes@outlook.com
+    url: <https://github.com/robertor12345>
+
+servers:
+  - url: http://Localhost:5000/Gateway/Payments/v1/
+    description: Development server address for the API
+
+paths:
+  /{sessionId}:
+    parameters:
+      - in: path
+        name: sessionId
+        description: The sessionID from the merchant associated with the transaction
+        required: true
+        schema:
+          $ref: '#/components/schemas/SessionIdformat'
+    get:
+      summary: Returns a list of all schemas
+      description: This will retrieve a JSON object containing all the relevant details pertaining to a past transaction
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/paymentForASessionResponse'
+        '404':
+          description:  Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/paymentForASessionNotFoundResponse'
+        '500':
+          description:  Unhandled Exception at service
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/paymentForASessionUnhandledExceptionResponse'
+          
+  /:
+    post:
+      summary: Posts a new payment processing request to the api
+      description: This will trigger a workflow process that communicates with the pertaining bank and processes the transaction
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/paymentProcessSuccesfulResponse'
+        '422':
+          description: Bad request - Payment validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/paymentValidationFailedExceptionResponse'
+        '503':
+          description: Unable to contact bank to approve the transaction.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unableToContactBankExceptionResponse'
+      
+
+components:
+
+  schemas:
+    #-- repsonses --#
+    
+      paymentForASessionResponse:
+        type: object
+        properties:
+          merchantSessionId:
+            type: string
+            description: The session associated with the transaction
+          paymentMethodDetails:
+            type: object
+            description: The session associated with the transaction
+            properties:
+                    cardNumber: 
+                        type: string
+                        description: The long card Number
+                    expiryMonth: 
+                        type: integer
+                        description: The expiry month
+                    expiryYear: 
+                        type: integer
+                        description: the expiry year
+                    cvv:
+                        type: integer
+                        description: the card security code
+          paymentAmount:
+            type: number
+            description: The total payment amount for the transaction
+          currency:
+            type: string
+            description: The abbreviated currency of the payment amount
+        example: |
+         {
+            "merchantSessionId": "9935dfd5-4bed-4e20-920e-7c65f3ecfab8",
+
+             "paymentMethodDetails":
+             {
+                "cardNumber": "5555555555554444",
+                "expiryMonth": 12,
+                "expiryYear": 2020,
+                "cvv": "999"
+              }
+              "paymentAmount": 999.99,
+
+              "currency": "GBP"
+          }
+
+      paymentForASessionNotFoundResponse:
+          type: object
+          properties:
+             statusCode:
+               type: number
+               description: The status code of ther failed request
+             friendlyErrorMessage:
+               type: string
+               description: A clear description of what went wrong with the payment process.
+          example: |
+           {
+              "statusCode": 404,
+              "friendlyErrorMessage": "No Payment record was found for the sessionId 6c62f228-1740-4f63-90ad-6ac15746a970"
+            }
+
+      paymentForASessionUnhandledExceptionResponse:
+          type: object
+          properties:
+             statusCode:
+               type: number
+               description: The status code of ther failed request
+             friendlyErrorMessage:
+               type: string
+               description: A clear description of what went wrong with the payment process.
+          example: |
+           {
+              "statusCode": 500,
+              "friendlyErrorMessage": "An Unhandled Exception has occured when attempting to retrieve payment for the Merchant Session ID 6c62f228-1740-4f63-90ad-6ac15746a970"
+            }
+
+
+      paymentProcessSuccesfulResponse:
+          type: object
+          properties:
+             paymentId:
+               type: string
+               description: Unique GUID identifier for the payment within the Gateway service
+             paymentStatus:
+               type: boolean
+               description: Informs thew merchant as to whether the payment was successful or not.
+             paymentAmount:
+               type: number
+               description: The total payment amount for the transaction
+             currency:
+               type: string
+               description: The abbreviated currency of the payment amount
+          example: |
+           {
+            "paymentId": "9935dfd5-4bed-4e20-920e-7c65f3ecfab8",
+
+             "paymentStatus":true,
+
+              "paymentAmount": 999.99,
+
+              "currency": "GBP"
+            }
+
+      unableToContactBankExceptionResponse:
+          type: object
+          properties:
+             statusCode:
+               type: number
+               description: The status code of ther failed request
+             friendlyErrorMessage:
+               type: string
+               description: A clear description of what went wrong with the payment process.
+          example: |
+           {
+              "statusCode": 503,
+              "friendlyErrorMessage": "An Exception has occured when attempting to contact the Bank to validate the transaction"
+            }
+
+      paymentValidationFailedExceptionResponse:
+          type: object
+          properties:
+             statusCode:
+               type: number
+               description: The status code of ther failed request
+             friendlyErrorMessage:
+               type: string
+               description: A clear description of what went wrong with the payment process.
+          example: |
+           {
+              "statusCode": 422,
+              "friendlyErrorMessage": "Payment Request failed Validation.The card expiry date details (MM/YY) 2/20 falls out of the valid date range"
+            } 
+
+      SessionIdformat:
+          type: string
+          description: A Unique GUID identifier for the session from the merchant
+          example: |
+           "9935dfd5-4bed-4e20-920e-7c65f3ecfab8"
